@@ -24,8 +24,8 @@ export default function Admin({ participants, availableIds }: { participants: an
   
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-2xl">
-          <h1 className="text-2xl font-bold mb-4">Administração</h1>
+        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <h1 className="text-black text-2xl font-bold mb-8">Administração</h1>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Selecionar Sessão</label>
             <select

@@ -1,6 +1,6 @@
 import { openDb } from "@/helpers/db";
 
-export async function handler(req: any, res: any) {
+export default async function handler(req: any, res: any) {
     if (req.method === 'POST') {
         const db = await openDb();
         const { id } = req.body;
