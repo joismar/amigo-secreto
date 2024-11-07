@@ -1,7 +1,12 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 
-type Database = sqlite3.Database;
+export type Participant = {
+  apelido: string;
+  sugestao: string;
+  sorteado: string;
+  pass: string;
+}
 
 export async function openDb() {
   const db = await open({

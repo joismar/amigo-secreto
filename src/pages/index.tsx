@@ -1,6 +1,4 @@
-import Image from "next/image";
 import localFont from "next/font/local";
-import { DEV_CLIENT_MIDDLEWARE_MANIFEST } from "next/dist/shared/lib/constants";
 import { useRouter } from "next/navigation";
 
 const geistSans = localFont({

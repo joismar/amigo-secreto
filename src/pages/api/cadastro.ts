@@ -1,6 +1,23 @@
 import { openDb } from "@/helpers/db";
 
-export default async function handler(req: any, res: any) {
+type CadastroBody = {
+    id: string;
+    nickname: string;
+    suggestion: string;
+    pass: string;
+}
+
+interface IRequest {
+    method: string;
+    body: CadastroBody;
+}
+
+interface IResponse {
+    status: (code: number) => IResponse;
+    end: () => void;
+}
+
+export default async function handler(req: IRequest, res: IResponse) {
     if (req.method === 'POST') {
         const db = await openDb();
         const { id, nickname, suggestion, pass } = req.body;

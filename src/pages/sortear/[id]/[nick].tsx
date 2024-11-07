@@ -1,7 +1,7 @@
 import { openDb } from "@/helpers/db";
 import { useParams, useRouter } from "next/navigation";
 import { GetServerSideProps } from "next/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Sortear({ participant, suggestion }: { participant: string, suggestion: string }) {
     const [authenticated, setAuthenticated] = useState(false);

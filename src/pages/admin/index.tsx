@@ -1,9 +1,9 @@
-import { openDb } from "@/helpers/db";
+import { Participant, openDb } from "@/helpers/db";
 import { useRouter } from "next/navigation";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
 
-export default function Admin({ participants, availableIds }: { participants: any[], availableIds: string[] }) {
+export default function Admin({ participants, availableIds }: { participants: Participant[], availableIds: string[] }) {
     const router = useRouter();
     const [id, setId] = useState('');
   
