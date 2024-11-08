@@ -91,15 +91,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     
     if (!id || typeof id !== 'string' || !nick || typeof nick !== 'string') return { props: {} };
     
-    const { rows: sortRows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick} AND sorteado IS NOT NULL`;
+    await sql`UPDATE participants SET status = false WHERE apelido = ${nick}`;
+    const { rows: sortRows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick} AND sorteado IS NOT NULL AND status = true`;
     
     if (!sortRows.length) {
         const { rows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${id} AND apelido != ${nick} AND APELIDO NOT IN (SELECT sorteado FROM participants WHERE NOT NULL)`;
         if (!rows.length) return { props: {} };
         const randomParticipant = rows[Math.floor(Math.random() * rows.length)];
         await sql`UPDATE participants SET sorteado = ${randomParticipant.apelido} WHERE apelido = ${nick}`;
+        await sql`UPDATE participants SET status = true WHERE apelido = ${nick}`;
         return { props: { participant: randomParticipant } };
     } else {
+        await sql`UPDATE participants SET status = true WHERE apelido = ${nick}`;
         const participant = sortRows[0];
         return { props: { participant } };
     }
