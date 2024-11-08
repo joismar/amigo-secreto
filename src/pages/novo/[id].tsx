@@ -1,10 +1,12 @@
+'use client'
+
 import { Participant, openDb } from "@/helpers/db";
 import { useParams } from "next/navigation";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
 
 export default function Cadastro({ participants }: { participants: Participant[] }) {
-    const {id} = useParams();
+    const { id } = useParams();
     const [nickname, setNickname] = useState('');
     const [suggestion, setSuggestion] = useState('');
     const [pass, setPass] = useState('');

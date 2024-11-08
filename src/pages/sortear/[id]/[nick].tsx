@@ -1,3 +1,5 @@
+'use client'
+
 import { openDb } from "@/helpers/db";
 import { useParams, useRouter } from "next/navigation";
 import { GetServerSideProps } from "next/types";
@@ -8,7 +10,7 @@ export default function Sortear({ participant, suggestion }: { participant: stri
     const [error, setError] = useState('');
     const [pass, setPass] = useState('');
     const router = useRouter();
-    const {nick} = useParams();
+    const { nick } = useParams();
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -63,7 +65,7 @@ export default function Sortear({ participant, suggestion }: { participant: stri
                   type="submit"
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   onClick={() => {
-                    router.push('/');
+                    router.push('/sortear');
                   }}
                 >
                   Sair
@@ -79,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const { id, nick } = context.params!;
     const hasBeenSorteado = await db.get('SELECT * FROM participants WHERE apelido = ? AND sorteado IS NOT NULL', [nick]);
     if (!hasBeenSorteado) {
-        const participants = await db.all('SELECT * FROM participants WHERE id = ? AND apelido != ? AND sorteado IS NULL', [id, nick]);
+        const participants = await db.all('SELECT * FROM participants WHERE id = ? AND apelido != ? AND APELIDO NOT IN (SELECT sorteado FROM participants WHERE NOT NULL)', [id, nick]);
         console.log("participantes", participants);
         const randomParticipant = participants[Math.floor(Math.random() * participants.length)];
         await db.run('UPDATE participants SET sorteado = ? WHERE apelido = ?', [randomParticipant.apelido, nick]);

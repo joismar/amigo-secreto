@@ -1,14 +1,16 @@
-import { useParams, useRouter } from "next/navigation";
+"use client"
+
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Name() {
     const [name, setName] = useState('');
-    const {id} = useParams();
+    const pathname = usePathname()
     const router = useRouter();
   
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      router.push(`/sortear/${id}/${name}`)
+      router.push(`${pathname}/${name}`)
     };
   
     return (

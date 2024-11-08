@@ -1,5 +1,7 @@
+'use client'
+
 import { Participant, openDb } from "@/helpers/db";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
 
@@ -18,7 +20,7 @@ export default function Admin({ participants, availableIds }: { participants: Pa
       });
       if (res.ok) {
         alert('Todos os participantes foram removidos com sucesso!');
-        router.refresh();
+        router.reload();
       }
     };
   
