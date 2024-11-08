@@ -1,4 +1,4 @@
-import { openDb } from "@/helpers/db";
+import { sql } from "@vercel/postgres";
 
 type DeleteBody = {
     id: string;
@@ -16,9 +16,8 @@ interface IResponse {
 
 export default async function handler(req: IRequest, res: IResponse) {
     if (req.method === 'POST') {
-        const db = await openDb();
         const { id } = req.body;
-        await db.run('DELETE FROM participants WHERE id = ?', [id]);
+        await sql`DELETE FROM participants WHERE id = ${id}`;
         res.status(200).end();
     }
 }

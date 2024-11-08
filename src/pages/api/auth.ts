@@ -1,4 +1,4 @@
-import { openDb } from "@/helpers/db";
+import { sql } from "@vercel/postgres";
 
 type AuthBody = {
     nick: string;
@@ -20,9 +20,8 @@ interface IResponse {
 
 export default async function handler(req: IRequest, res: IResponse) {
     if (req.method === 'POST') {
-        const db = await openDb();
         const { nick, pass } = req.body;
-        const finded = await db.get('SELECT * FROM participants WHERE apelido = ? AND pass = ?', [nick, pass]);
+        const finded = await sql`SELECT * FROM participants WHERE apelido = ${nick} AND pass = ${pass}`;
         if (finded) {
             res.status(200).json({ success: true });
         } else {

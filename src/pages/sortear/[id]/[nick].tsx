@@ -1,11 +1,12 @@
 'use client'
 
-import { openDb } from "@/helpers/db";
+import { Participant } from "@/helpers/types";
+import { sql } from "@vercel/postgres";
 import { useParams, useRouter } from "next/navigation";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
 
-export default function Sortear({ participant, suggestion }: { participant: string, suggestion: string }) {
+export default function Sortear({ participant }: { participant: Participant }) {
     const [authenticated, setAuthenticated] = useState(false);
     const [error, setError] = useState('');
     const [pass, setPass] = useState('');
@@ -28,6 +29,12 @@ export default function Sortear({ participant, suggestion }: { participant: stri
           setAuthenticated(true);
         })
     };
+
+    if (!participant) return (
+        <div className="flex flex-col items-center justify-center h-screen">
+          <p className="text-red-500">Evento ou participante não encontrado!</p>
+        </div>
+    );
 
     return (!authenticated) ? (
         <div className="flex flex-col items-center justify-center h-screen">
@@ -58,14 +65,14 @@ export default function Sortear({ participant, suggestion }: { participant: stri
     ) : (
         <div className="flex flex-col items-center justify-center h-screen">
           <div className="bg-white shadow-md rounded px-8 py-8 mb-4">
-              <p className="text-gray-700">Você sorteou: <span className="font-bold">{participant}</span></p>
-              <p className="text-gray-700">Sugestão de presente: <span className="font-bold">{suggestion}</span></p>
+              <p className="text-gray-700">Você sorteou: <span className="font-bold">{participant.apelido}</span></p>
+              <p className="text-gray-700">Sugestão de presente: <span className="font-bold">{participant.sugestao}</span></p>
               <div className="w-full flex justify-end pt-8">
                 <button
                   type="submit"
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   onClick={() => {
-                    router.push('/sortear');
+                    router.push(`/sortear/${participant.id}`);
                   }}
                 >
                   Sair
@@ -77,17 +84,21 @@ export default function Sortear({ participant, suggestion }: { participant: stri
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const db = await openDb();
     const { id, nick } = context.params!;
-    const hasBeenSorteado = await db.get('SELECT * FROM participants WHERE apelido = ? AND sorteado IS NOT NULL', [nick]);
-    if (!hasBeenSorteado) {
-        const participants = await db.all('SELECT * FROM participants WHERE id = ? AND apelido != ? AND APELIDO NOT IN (SELECT sorteado FROM participants WHERE NOT NULL)', [id, nick]);
-        console.log("participantes", participants);
-        const randomParticipant = participants[Math.floor(Math.random() * participants.length)];
-        await db.run('UPDATE participants SET sorteado = ? WHERE apelido = ?', [randomParticipant.apelido, nick]);
-        return { props: { participant: randomParticipant.apelido, suggestion: randomParticipant.sugestao } };
+    
+    if (!id || typeof id !== 'string' || !nick || typeof nick !== 'string') return { props: {} };
+    
+    const { rows: sortRows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick} AND sorteado IS NOT NULL`;
+    
+    if (!sortRows.length) {
+        const { rows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${id} AND apelido != ${nick} AND APELIDO NOT IN (SELECT sorteado FROM participants WHERE NOT NULL)`;
+        
+        const randomParticipant = rows[Math.floor(Math.random() * rows.length)];
+        await sql`UPDATE participants SET sorteado = ${randomParticipant.apelido} WHERE apelido = ${nick}`;
+        return { props: { participant: randomParticipant } };
     } else {
-        return { props: { participant: hasBeenSorteado.sorteado, suggestion: hasBeenSorteado.sugestao } };
+        const participant = sortRows[0];
+        return { props: { participant } };
     }
 };
   

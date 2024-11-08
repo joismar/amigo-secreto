@@ -1,9 +1,10 @@
 'use client'
 
-import { Participant, openDb } from "@/helpers/db";
 import { useParams } from "next/navigation";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
+import { sql } from "@vercel/postgres";
+import { Participant } from "@/helpers/types";
 
 export default function Cadastro({ participants }: { participants: Participant[] }) {
     const { id } = useParams();
@@ -20,6 +21,10 @@ export default function Cadastro({ participants }: { participants: Participant[]
         },
         body: JSON.stringify({ id, nickname, suggestion, pass }),
       });
+      if (res.status === 409) {
+        alert('Apelido já cadastrado!');
+        return;
+      }
       if (res.ok) {
         setNickname('');
         setSuggestion('');
@@ -79,7 +84,9 @@ export default function Cadastro({ participants }: { participants: Participant[]
   }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const db = await openDb();
-  const participants = await db.all('SELECT * FROM participants WHERE id = ?', [context.params?.id]);
-  return { props: { participants } };
+  if (!context.params?.id || typeof context.params.id !== 'string') {
+    return { props: { participants: [] } };
+  }
+  const { rows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${context.params?.id}`;
+  return { props: { participants: rows } };
 };

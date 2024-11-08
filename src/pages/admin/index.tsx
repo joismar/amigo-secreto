@@ -1,6 +1,7 @@
 'use client'
 
-import { Participant, openDb } from "@/helpers/db";
+import { Participant } from "@/helpers/types";
+import { sql } from "@vercel/postgres";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
@@ -41,11 +42,11 @@ export default function Admin({ participants, availableIds }: { participants: Pa
               ))}
             </select>
           </div>
-          {id && (
+          {id.length > 0 && (
             <>
               <ul className="mb-4">
                 {participants.map((participant, index) => (
-                  <li key={index} className="border-b border-gray-200 py-2">
+                  <li key={index} className="border-b border-gray-200 py-2 text-black">
                     <span className="font-bold">Apelido:</span> {participant.apelido} - <span className="font-bold">Sugestão:</span> {participant.sugestao}
                   </li>
                 ))}
@@ -64,7 +65,10 @@ export default function Admin({ participants, availableIds }: { participants: Pa
   }
   
   export const getServerSideProps: GetServerSideProps = async () => {
-    const db = await openDb();
-    const availableIds = await db.all('SELECT DISTINCT id FROM participants');
-    return { props: { participants: [], availableIds: availableIds.map((row) => row.id) } };
+    const { rows } = await sql<Participant>`SELECT DISTINCT id FROM participants`;
+    if (!rows.length) {
+      return { props: { participants: [], availableIds: [] } };
+    }
+    const { rows: participants } = await sql<Participant>`SELECT * FROM participants WHERE id = ${rows[0].id}`;
+    return { props: { participants: participants, availableIds: rows.map(row => row.id) } };
   };
