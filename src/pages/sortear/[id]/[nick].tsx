@@ -39,6 +39,8 @@ export default function Sortear({ participant }: { participant: Participant }) {
     return (!authenticated) ? (
         <div className="flex flex-col items-center justify-center h-screen">
         <form className="bg-white shadow-md rounded px-8 py-8 mb-4" onSubmit={handleSubmit}>
+          <h1 className="text-black text-2xl font-bold mb-4">Amigo Secreto - {participant.id}</h1>
+          <h1 className="text-black text-md mb-8">Digite a senha pra saber quem você sorteou!</h1>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Senha</label>
             <input
@@ -65,6 +67,7 @@ export default function Sortear({ participant }: { participant: Participant }) {
     ) : (
         <div className="flex flex-col items-center justify-center h-screen">
           <div className="bg-white shadow-md rounded px-8 py-8 mb-4">
+          <h1 className="text-black text-2xl font-bold mb-8">Amigo Secreto - {participant.id}</h1>
               <p className="text-gray-700">Você sorteou: <span className="font-bold">{participant.apelido}</span></p>
               <p className="text-gray-700">Sugestão de presente: <span className="font-bold">{participant.sugestao}</span></p>
               <div className="w-full flex justify-end pt-8">
@@ -92,7 +95,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     
     if (!sortRows.length) {
         const { rows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${id} AND apelido != ${nick} AND APELIDO NOT IN (SELECT sorteado FROM participants WHERE NOT NULL)`;
-        
+        if (!rows.length) return { props: {} };
         const randomParticipant = rows[Math.floor(Math.random() * rows.length)];
         await sql`UPDATE participants SET sorteado = ${randomParticipant.apelido} WHERE apelido = ${nick}`;
         return { props: { participant: randomParticipant } };
