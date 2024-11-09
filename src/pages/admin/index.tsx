@@ -24,6 +24,21 @@ export default function Admin({ participants, availableIds }: { participants: Pa
         router.reload();
       }
     };
+
+    const handleShuffle = async () => {
+      if (!id) return;
+      const res = await fetch(`/api/admin/shuffle`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) {
+        alert('Sorteio realizado com sucesso!');
+        router.reload();
+      }
+    };
   
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -51,12 +66,20 @@ export default function Admin({ participants, availableIds }: { participants: Pa
                   </li>
                 ))}
               </ul>
-              <button
-                onClick={handleRemoveAll}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Remover Todos os Participantes
-              </button>
+              <div className="flex flex-row gap-4">
+                <button
+                  onClick={handleRemoveAll}
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Remover Todos
+                </button>
+                <button
+                  onClick={handleShuffle}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Sortear
+                </button>
+              </div>
             </>
           )}
         </div>

@@ -6,12 +6,12 @@ import { useParams, useRouter } from "next/navigation";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
 
-export default function Sortear({ participant }: { participant: Participant }) {
+export default function Sortear({ participant, me }: { participant: Participant, me: Participant }) {
     const [authenticated, setAuthenticated] = useState(false);
     const [error, setError] = useState('');
     const [pass, setPass] = useState('');
     const router = useRouter();
-    const { nick } = useParams();
+    const { nick, id } = useParams();
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -30,9 +30,21 @@ export default function Sortear({ participant }: { participant: Participant }) {
         })
     };
 
-    if (!participant) return (
+    if (!me && !participant) return (
         <div className="flex flex-col items-center justify-center h-screen">
-          <p className="text-red-500">Evento ou participante não encontrado!</p>
+          <div className="bg-white shadow-md rounded px-8 py-8 mb-4">
+            <p className="text-red-500 mb-8 font-bold">Evento ou participante não encontrado!</p>
+            <div className="w-full flex justify-end">
+              <button
+                onClick={() => {
+                  router.push(`/sorteio/${id}`);
+                }}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Voltar
+              </button>
+            </div>
+          </div>
         </div>
     );
 
@@ -86,70 +98,16 @@ export default function Sortear({ participant }: { participant: Participant }) {
     );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     const { id, nick } = context.params!;
-    
-//     if (!id || typeof id !== 'string' || !nick || typeof nick !== 'string') return { props: {} };
-    
-//     const { rows: sorteadoRows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick} AND sorteado IS NOT NULL`;
-    
-//     if (!sorteadoRows.length) {
-//         const { rows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${id} AND apelido != ${nick} AND apelido NOT IN (SELECT sorteado FROM participants WHERE sorteado IS NOT NULL)`;
-//         if (!rows.length) return { props: {} };
-//         const randomParticipant = rows[Math.floor(Math.random() * rows.length)];
-//         await sql`UPDATE participants SET sorteado = ${randomParticipant.apelido} WHERE apelido = ${nick}`;
-//         return { props: { participant: randomParticipant } };
-//     } else {
-//         const participant = sorteadoRows[0];
-//         return { props: { participant } };
-//     }
-// };
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id, nick } = context.params!;
     
   if (!id || typeof id !== 'string' || !nick || typeof nick !== 'string') return { props: {} };
   
   const { rows: me } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick}`;
-  if (me[0].sorteado === null) {
-    const { rows: participants } = await sql<Participant>`SELECT * FROM participants`;
 
-    if (participants.length < 2) return { props: {} };
+  if (!me.length) return { props: {} };
 
-    let shuffled = [...participants];
-    let attempts = 0;
-    do {
-        shuffled = shuffleArray(participants);
-        attempts++;
-    } while (hasSelfAssignment(participants, shuffled) && attempts < 100);
+  const { rows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${me[0].sorteado}`;
+  return { props: { participant: rows[0], me } };
 
-    if (hasSelfAssignment(participants, shuffled)) {
-        return { props: {} };
-    }
-
-    await Promise.all(
-        participants.map((participant, index) =>
-            sql`UPDATE participants SET sorteado = ${shuffled[index].apelido} WHERE apelido = ${participant.apelido}`
-        )
-    );
-
-    const { rows: meUpdated } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick}`;
-    const { rows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${meUpdated[0].sorteado}`;
-    return { props: { participant: rows[0] } };
-  } else {
-    const { rows: meUpdated } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick}`;
-    const { rows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${meUpdated[0].sorteado}`;
-    return { props: { participant: rows[0] } };
-  }
 };
-
-function shuffleArray(array: Participant[]): Participant[] {
-  return array
-      .map((value) => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value);
-}
-
-function hasSelfAssignment(original: Participant[], shuffled: Participant[]): boolean {
-  return original.some((participant, index) => participant.apelido === shuffled[index].apelido);
-}
