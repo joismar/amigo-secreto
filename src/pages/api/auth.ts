@@ -21,8 +21,8 @@ interface IResponse {
 export default async function handler(req: IRequest, res: IResponse) {
     if (req.method === 'POST') {
         const { nick, pass } = req.body;
-        const finded = await sql`SELECT * FROM participants WHERE apelido = ${nick} AND pass = ${pass}`;
-        if (finded) {
+        const { rows } = await sql`SELECT * FROM participants WHERE apelido = ${nick} AND pass = ${pass}`;
+        if (rows.length) {
             res.status(200).json({ success: true });
         } else {
             res.status(401).json({ success: false });

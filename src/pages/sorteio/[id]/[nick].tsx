@@ -22,11 +22,11 @@ export default function Sortear({ participant }: { participant: Participant }) {
           },
           body: JSON.stringify({ nick, pass }),
         }).then((res) => {
-          if (res.status === 401) {
-            setError('Senha incorreta');
+          if (res.status === 200) {
+            setAuthenticated(true);
             return;
-          };
-          setAuthenticated(true);
+          }
+          setError('Senha incorreta');
         })
     };
 
@@ -75,7 +75,7 @@ export default function Sortear({ participant }: { participant: Participant }) {
                   type="submit"
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   onClick={() => {
-                    router.push(`/sortear/${participant.id}`);
+                    router.push(`/sorteio/${participant.id}`);
                   }}
                 >
                   Sair
