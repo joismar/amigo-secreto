@@ -40,7 +40,7 @@ export default function Cadastro({ participants }: { participants: Participant[]
     return (
       <div className="flex flex-col items-center justify-center h-screen">
         <form className="bg-white shadow-md rounded px-8 py-8 mb-4" onSubmit={handleSubmit}>
-          <h2 className="text-black text-2xl font-bold mb-8">Amigo Secreto - {id}</h2>
+          <h1 className="text-black text-2xl font-bold mb-8">Amigo Secreto - {id}</h1>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Apelido</label>
             <input

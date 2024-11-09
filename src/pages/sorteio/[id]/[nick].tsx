@@ -86,25 +86,70 @@ export default function Sortear({ participant }: { participant: Participant }) {
     );
 }
 
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//     const { id, nick } = context.params!;
+    
+//     if (!id || typeof id !== 'string' || !nick || typeof nick !== 'string') return { props: {} };
+    
+//     const { rows: sorteadoRows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick} AND sorteado IS NOT NULL`;
+    
+//     if (!sorteadoRows.length) {
+//         const { rows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${id} AND apelido != ${nick} AND apelido NOT IN (SELECT sorteado FROM participants WHERE sorteado IS NOT NULL)`;
+//         if (!rows.length) return { props: {} };
+//         const randomParticipant = rows[Math.floor(Math.random() * rows.length)];
+//         await sql`UPDATE participants SET sorteado = ${randomParticipant.apelido} WHERE apelido = ${nick}`;
+//         return { props: { participant: randomParticipant } };
+//     } else {
+//         const participant = sorteadoRows[0];
+//         return { props: { participant } };
+//     }
+// };
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { id, nick } = context.params!;
+  const { id, nick } = context.params!;
     
-    if (!id || typeof id !== 'string' || !nick || typeof nick !== 'string') return { props: {} };
-    
-    await sql`UPDATE participants SET status = false WHERE apelido = ${nick}`;
-    const { rows: sorteadoRows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick} AND sorteado IS NOT NULL AND status = true`;
-    
-    if (!sorteadoRows.length) {
-        const { rows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${id} AND apelido != ${nick} AND apelido NOT IN (SELECT sorteado FROM participants WHERE sorteado IS NOT NULL)`;
-        if (!rows.length) return { props: {} };
-        const randomParticipant = rows[Math.floor(Math.random() * rows.length)];
-        await sql`UPDATE participants SET sorteado = ${randomParticipant.apelido} WHERE apelido = ${nick}`;
-        await sql`UPDATE participants SET status = true WHERE apelido = ${nick}`;
-        return { props: { participant: randomParticipant } };
-    } else {
-        await sql`UPDATE participants SET status = true WHERE apelido = ${nick}`;
-        const participant = sorteadoRows[0];
-        return { props: { participant } };
-    }
-};
+  if (!id || typeof id !== 'string' || !nick || typeof nick !== 'string') return { props: {} };
   
+  const { rows: me } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick}`;
+  if (me[0].sorteado === null) {
+    const { rows: participants } = await sql<Participant>`SELECT * FROM participants`;
+
+    if (participants.length < 2) return { props: {} };
+
+    let shuffled = [...participants];
+    let attempts = 0;
+    do {
+        shuffled = shuffleArray(participants);
+        attempts++;
+    } while (hasSelfAssignment(participants, shuffled) && attempts < 100);
+
+    if (hasSelfAssignment(participants, shuffled)) {
+        return { props: {} };
+    }
+
+    await Promise.all(
+        participants.map((participant, index) =>
+            sql`UPDATE participants SET sorteado = ${shuffled[index].apelido} WHERE apelido = ${participant.apelido}`
+        )
+    );
+
+    const { rows: meUpdated } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick}`;
+    const { rows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${meUpdated[0].sorteado}`;
+    return { props: { participant: rows[0] } };
+  } else {
+    const { rows: meUpdated } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${nick}`;
+    const { rows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${meUpdated[0].sorteado}`;
+    return { props: { participant: rows[0] } };
+  }
+};
+
+function shuffleArray(array: Participant[]): Participant[] {
+  return array
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+}
+
+function hasSelfAssignment(original: Participant[], shuffled: Participant[]): boolean {
+  return original.some((participant, index) => participant.apelido === shuffled[index].apelido);
+}

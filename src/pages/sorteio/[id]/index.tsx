@@ -15,7 +15,9 @@ export default function Name() {
   
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <form className="bg-white shadow-md rounded px-8 py-8 mb-4" onSubmit={handleSubmit}>
+        <form className="bg-white shadow-md rounded px-8 py-8 mb-4 max-w-[400px]" onSubmit={handleSubmit}>
+          <h1 className="text-black text-2xl font-bold mb-4">Amigo Secreto - {pathname.split("/")[2]}</h1>
+          <p className="text-black mb-8">Informe seu nome igual o informado no cadastro para saber quem você sorteou.</p>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Seu Nome</label>
             <input

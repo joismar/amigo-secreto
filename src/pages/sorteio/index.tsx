@@ -9,7 +9,7 @@ export default function Instance() {
   
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      router.push(`/sortear/${instance}`)
+      router.push(`/sorteio/${instance}`)
     };
   
     return (
@@ -20,10 +20,7 @@ export default function Instance() {
             <input
               type="text"
               value={instance}
-              onChange={(e) => {
-                e.target.value = e.target.value.toLowerCase().replace(/\s/g, '');
-                setInstance(e.target.value)
-              }}
+              onChange={(e) => setInstance(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
