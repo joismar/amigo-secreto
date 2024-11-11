@@ -42,9 +42,10 @@ export default function Cadastro({ participants }: { participants: Participant[]
         <form className="bg-white shadow-md rounded px-8 py-8 mb-4" onSubmit={handleSubmit}>
           <h1 className="text-black text-2xl font-bold mb-8">Amigo Secreto - {id}</h1>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Apelido</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">Nome ou Apelido (somente uma palavra)</label>
             <input
               type="text"
+              placeholder="Ex: fulano"
               value={nickname}
               onChange={(e) => {
                 e.target.value = e.target.value.toLowerCase().replace(/\s/g, '');
@@ -54,8 +55,9 @@ export default function Cadastro({ participants }: { participants: Participant[]
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Sugestão de Presentes</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2">Sugestão de Presentes (até R$ 20)</label>
             <input
+              placeholder="Ex: chocolate, livro, etc."
               type="text"
               value={suggestion}
               onChange={(e) => setSuggestion(e.target.value)}
