@@ -58,10 +58,7 @@ export default function Sortear({ participant, me }: { participant: Participant,
             <input
               type="text"
               value={pass}
-              onChange={(e) => {
-                e.target.value = e.target.value.toLowerCase().replace(/\s/g, '');
-                setPass(e.target.value)
-              }}
+              onChange={(e) => setPass(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
             <p className="text-red-500">{error}</p>
