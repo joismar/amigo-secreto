@@ -1,7 +1,7 @@
 import { sql } from "@vercel/postgres";
 
 type CadastroBody = {
-    id: string;
+    event: string;
     nickname: string;
     suggestion: string;
     pass: string;
@@ -20,13 +20,17 @@ interface IResponse {
 
 export default async function handler(req: IRequest, res: IResponse) {
     if (req.method === 'POST') {
-        const { id, nickname, suggestion, pass } = req.body;
-        const { rows } = await sql`SELECT * FROM participants WHERE apelido = ${nickname} AND id = ${id}`;
+        const { event, nickname, suggestion, pass } = req.body;
+        const { rows } = await sql`SELECT * FROM participants WHERE apelido = ${nickname} AND event = ${event}`;
         if (rows.length) {
             res.status(409).json({ success: false });
             return;
         }
-        await sql`INSERT INTO participants (id, apelido, sugestao, pass) VALUES (${id}, ${nickname}, ${suggestion}, ${pass})`;
+
+        const { rows: participants } = await sql`SELECT * FROM participants WHERE event = ${event}`;
+        const admin = participants.length === 0;
+
+        await sql`INSERT INTO participants (event, apelido, sugestao, pass, admin) VALUES (${event}, ${nickname}, ${suggestion}, ${pass}, ${admin})`;
         res.status(200).end();
     }
 }

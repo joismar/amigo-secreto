@@ -1,6 +1,7 @@
 import { sql } from "@vercel/postgres";
 
 type AuthBody = {
+    event: string;
     nick: string;
     pass: string;
 }
@@ -20,8 +21,8 @@ interface IResponse {
 
 export default async function handler(req: IRequest, res: IResponse) {
     if (req.method === 'POST') {
-        const { nick, pass } = req.body;
-        const { rows } = await sql`SELECT * FROM participants WHERE apelido = ${nick} AND pass = ${pass}`;
+        const { event, nick, pass } = req.body;
+        const { rows } = await sql`SELECT * FROM participants WHERE apelido = ${nick} AND pass = ${pass} AND event = ${event}`;
         if (rows.length) {
             res.status(200).json({ success: true });
         } else {
