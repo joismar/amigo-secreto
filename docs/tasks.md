@@ -29,11 +29,12 @@
 		- [x] Modifique os campos para pedir email e senha
 		- [x] Ao clicar em "Enviar", se der sucesso redirecione para /sorteio/[event_id]/[participant_id]
 		- [x] Aplique ao layout e tema criado
-	- [ ] /sorteio/[nick]
-		- [ ] Mude a rota para /sorteio/[event_id]/[participant_id]
-		- [ ] Essa rota deve receber um state "isAuthenticated"
-		- [ ] Se autenticado busque no banco se ele já foi sorteado e mostre as informações de uma forma bonita
-		- [ ] Aplique ao layout e tema criado
+	- [x] /sorteio/[nick]
+		- [x] Mude a rota para /sorteio/[event_id]/[participant_id]
+		- [x] Essa rota deve receber um state "isAuthenticated"
+		- [x] Se autenticado busque no banco se ele já foi sorteado e mostre as informações de uma forma bonita
+		- [x] Remova campos de login desnecessários e centralize o login na tela anterior
+		- [x] Aplique ao layout e tema criado
 	- [ ] /admin
 		- [ ] Essa tela agora pede login e senha
 		- [ ] Quando autenticado corretamente mostra o select com os eventos criados
