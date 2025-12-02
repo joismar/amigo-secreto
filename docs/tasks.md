@@ -4,13 +4,13 @@
 - [ ] Melhoria dos fluxos
 	- [ ] /evento
 		- [ ] Adicione o título "Novo Evento"
-		- [ ] Além do nome do evento, peça email e senha
+		- [ ] Além do nome do evento, peça apelido, email e senha
 		- [ ] Crie um novo endpoint pra criar evento (tabela "event")
 		- [ ] Ao confirmar, um novo evento é criado, e um novo participante admin também, passando o id do evento para coluna "event_id"
-		- [ ] Quando for sucesso, o usuário será redirecionado para /event/[event_id]
+		- [ ] Quando for sucesso, o usuário será redirecionado para /sorteio/[event_id]/[participant_id] já logado
 		- [ ] Aplique ao layout e tema criado
-	- [ ] /event/[event]
-		- [ ] Mude a rota para /event/[event_id]
+	- [ ] /evento/[event]
+		- [ ] Mude a rota para /evento/[event_id]
 		- [ ] Antes de tudo crie um endpoint get event e busque o evento, pelo id, caso não encontre informe na tela
 		- [ ] Remova "Amigo Secreto -" do título e deixe apenas o nome do evento
 		- [ ] Ajuste os campos para: "Nome/Apelido", "Sugestão de presentes" e "Email" e "Senha".

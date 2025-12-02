@@ -2,37 +2,97 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Layout } from "../../components/Layout";
+import { Input } from "../../components/ui/Input";
+import { Button } from "../../components/ui/Button";
 
-export default function Instance() {
-    const [instance, setInstance] = useState('');
-    const router = useRouter();
-  
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      router.push(`/evento/${instance}`)
-    };
-  
-    return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <form className="bg-white shadow-md rounded px-8 py-8 mb-4" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Nome do Evento</label>
-            <input
-              type="text"
-              value={instance}
-              onChange={(e) => setInstance(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-          <div className="w-full flex justify-end">
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Enviar
-          </button>
+export default function NewEvent() {
+  const [eventName, setEventName] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [suggestion, setSuggestion] = useState('');
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/events/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ eventName, nickname, suggestion, email, pass }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Redirect to /sorteio/[event_id]/[participant_id]
+        router.push(`/sorteio/${data.eventId}/${data.participantId}`);
+      } else {
+        alert('Erro ao criar evento: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error creating event:', error);
+      alert('Erro ao criar evento');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Layout title="Novo Evento">
+      <div className="max-w-md mx-auto">
+        <h2 className="text-2xl font-bold text-christmas-gold mb-6 text-center">Novo Evento</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Input
+            label="Nome do Evento"
+            value={eventName}
+            onChange={(e) => setEventName(e.target.value)}
+            placeholder="Ex: Natal da Família"
+            required
+          />
+          <Input
+            label="Seu Apelido"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="Ex: João"
+            required
+          />
+          <Input
+            label="Sugestão de Presente"
+            value={suggestion}
+            onChange={(e) => setSuggestion(e.target.value)}
+            placeholder="Ex: Livro"
+            required
+          />
+          <Input
+            label="Email do Admin"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="seu@email.com"
+            required
+          />
+          <Input
+            label="Senha do Admin"
+            type="password"
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+            placeholder="******"
+            required
+          />
+          <div className="flex justify-end pt-4">
+            <Button type="submit" disabled={loading} className="w-full md:w-auto">
+              {loading ? 'Criando...' : 'Criar Evento'}
+            </Button>
           </div>
         </form>
       </div>
-    );
-  }
+    </Layout>
+  );
+}
