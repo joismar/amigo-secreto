@@ -32,7 +32,7 @@
 	- [ ] /sorteio/[nick]
 		- [ ] Mude a rota para /sorteio/[event_id]/[participant_id]
 		- [ ] Essa rota deve receber um state "isAuthenticated"
-		- [ ] Se autenticado busque no banco se ele já foi sorteado e mostre as informações
+		- [ ] Se autenticado busque no banco se ele já foi sorteado e mostre as informações de uma forma bonita
 		- [ ] Aplique ao layout e tema criado
 	- [ ] /admin
 		- [ ] Essa tela agora pede login e senha

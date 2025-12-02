@@ -47,6 +47,7 @@ export default function EventLogin({ event }: { event: Event | null }) {
                 const participantEvent = data.events.find((e: any) => e.event.id === event_id);
 
                 if (participantEvent) {
+                    sessionStorage.setItem(`auth_${event_id}_${participantEvent.participantId}`, 'true');
                     router.push(`/sorteio/${event_id}/${participantEvent.participantId}`);
                 } else {
                     alert('Você não participa deste evento.');
