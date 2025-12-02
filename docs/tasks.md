@@ -11,7 +11,24 @@
 		- [x] Aplique ao layout e tema criado
 	- [x] /evento/[event]
 		- [x] Mude a rota para /evento/[event_id]
+		- [x] Antes de tudo crie um endpoint get event e busque o evento, pelo id, caso não encontre informe na tela
+		- [x] Remova "Amigo Secreto -" do título e deixe apenas o nome do evento
+		- [x] Ajuste os campos para: "Nome/Apelido", "Sugestão de presentes" e "Email" e "Senha".
+		- [x] Verifique se o email não existe, caso sucesso crie um novo participant
+		- [x] Mude o botão "Sou Admin (Sortear)" para "Sortear" e mude o comportamento para ir para /sorteio/[event_id]
+		- [x] Aplique ao layout e tema criado
+	- [ ] /sorteio/[event]
+		- [ ] Modifique a rota para /sorteio/[event_id]
+		- [ ] Se não achar o evento exiba uma mensagem
+		- [ ] Remova "Amigo Secreto -" do título e deixe apenas o nome do evento
+		- [ ] Modifique os campos para pedir email e senha
+		- [ ] Ao clicar em "Enviar", se der sucesso redirecione para /sorteio/[event_id]/[participant_id]
 		- [ ] Aplique ao layout e tema criado
+	- [x] /sorteio
+		- [x] Agora essa tela deve pedir email e senha
+		- [x] Se achar eventos atrelados, mostre um select "Escolha o evento" e um botão "Ver sorteio"
+		- [x] Ao clicar em "Ver sorteio" redirecione para /sorteio/[event_id]/[participant_id]
+		- [x] Aplique ao layout e tema criado
 	- [ ] /sorteio/[nick]
 		- [ ] Mude a rota para /sorteio/[event_id]/[participant_id]
 		- [ ] Essa rota deve receber um state "isAuthenticated"
