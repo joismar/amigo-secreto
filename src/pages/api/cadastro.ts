@@ -1,9 +1,10 @@
 import { sql } from "@vercel/postgres";
 
 type CadastroBody = {
-    event: string;
+    event_id: string;
     nickname: string;
     suggestion: string;
+    email: string;
     pass: string;
 }
 
@@ -20,17 +21,19 @@ interface IResponse {
 
 export default async function handler(req: IRequest, res: IResponse) {
     if (req.method === 'POST') {
-        const { event, nickname, suggestion, pass } = req.body;
-        const { rows } = await sql`SELECT * FROM participants WHERE apelido = ${nickname} AND event = ${event}`;
+        const { event_id, nickname, suggestion, email, pass } = req.body;
+
+        // Check if email already exists for this event
+        const { rows } = await sql`SELECT * FROM participants WHERE email = ${email} AND event_id = ${event_id}`;
         if (rows.length) {
             res.status(409).json({ success: false });
             return;
         }
 
-        const { rows: participants } = await sql`SELECT * FROM participants WHERE event = ${event}`;
+        const { rows: participants } = await sql`SELECT * FROM participants WHERE event_id = ${event_id}`;
         const admin = participants.length === 0;
 
-        await sql`INSERT INTO participants (event, apelido, sugestao, pass, admin) VALUES (${event}, ${nickname}, ${suggestion}, ${pass}, ${admin})`;
+        await sql`INSERT INTO participants (event_id, apelido, sugestao, email, pass, admin) VALUES (${event_id}, ${nickname}, ${suggestion}, ${email}, ${pass}, ${admin})`;
         res.status(200).end();
     }
 }
