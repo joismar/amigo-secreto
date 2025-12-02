@@ -4,14 +4,21 @@ import { Participant } from "@/helpers/types";
 import { sql } from "@vercel/postgres";
 import { useParams, useRouter } from "next/navigation";
 import { GetServerSideProps } from "next/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function Sortear({ participant, me }: { participant?: Participant, me?: Participant }) {
+export default function Sortear({ participant, me }: { participant?: Participant | null, me?: Participant | null }) {
   const [authenticated, setAuthenticated] = useState(false);
   const [error, setError] = useState('');
   const [pass, setPass] = useState('');
   const router = useRouter();
   const { nick, event } = useParams();
+
+  useEffect(() => {
+    const isAuth = sessionStorage.getItem(`auth_${event}_${nick}`);
+    if (isAuth === 'true') {
+      setAuthenticated(true);
+    }
+  }, [event, nick]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,6 +30,7 @@ export default function Sortear({ participant, me }: { participant?: Participant
       body: JSON.stringify({ event, nick, pass }),
     }).then((res) => {
       if (res.status === 200) {
+        sessionStorage.setItem(`auth_${event}_${nick}`, 'true');
         setAuthenticated(true);
         return;
       }
@@ -30,7 +38,7 @@ export default function Sortear({ participant, me }: { participant?: Participant
     })
   };
 
-  if (!me && !participant) return (
+  if (!me || !participant) return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="bg-white shadow-md rounded px-8 py-8 mb-4">
         <p className="text-red-500 mb-8 font-bold">Evento ou participante não encontrado!</p>
@@ -105,6 +113,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!me.length) return { props: {} };
 
   const { rows } = await sql<Participant>`SELECT * FROM participants WHERE apelido = ${me[0].sorteado} AND event = ${event}`;
-  return { props: { participant: rows[0], me: me[0] } };
+  return { props: { participant: rows[0] || null, me: me[0] || null } };
 
 };

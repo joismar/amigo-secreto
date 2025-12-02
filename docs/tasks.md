@@ -1,0 +1,41 @@
+- [x] Melhoria de tema
+	- [x] Crie um design system básico com inputs, selects, buttons, layouts e modais.
+	- [x] Crie um tema dark natalino e aplique a todos os componentes
+- [ ] Melhoria dos fluxos
+	- [ ] /evento
+		- [ ] Adicione o título "Novo Evento"
+		- [ ] Além do nome do evento, peça email e senha
+		- [ ] Crie um novo endpoint pra criar evento (tabela "event")
+		- [ ] Ao confirmar, um novo evento é criado, e um novo participante admin também, passando o id do evento para coluna "event_id"
+		- [ ] Quando for sucesso, o usuário será redirecionado para /event/[event_id]
+		- [ ] Aplique ao layout e tema criado
+	- [ ] /event/[event]
+		- [ ] Mude a rota para /event/[event_id]
+		- [ ] Antes de tudo crie um endpoint get event e busque o evento, pelo id, caso não encontre informe na tela
+		- [ ] Remova "Amigo Secreto -" do título e deixe apenas o nome do evento
+		- [ ] Ajuste os campos para: "Nome/Apelido", "Sugestão de presentes" e "Email" e "Senha".
+		- [ ] Verifique se o email não existe, caso sucesso crie um novo participant
+		- [ ] Mude o botão "Sou Admin (Sortear)" para "Sortear" e mude o comportamento para ir para /sorteio/[event_id]
+		- [ ] Aplique ao layout e tema criado
+	- [ ] /sorteio
+		- [ ] Agora essa tela deve pedir email e senha
+		- [ ] Se achar eventos atrelados, mostre um select "Escolha o evento" e um botão "Ver sorteio"
+		- [ ] Ao clicar em "Ver sorteio" redirecione para /sorteio/[event_id]/[participant_id]
+		- [ ] Aplique ao layout e tema criado
+	- [ ] /sorteio/[event]
+		- [ ] Modifique a rota para /sorteio/[event_id]
+		- [ ] Se não achar o evento exiba uma mensagem
+		- [ ] Remova "Amigo Secreto -" do título e deixe apenas o nome do evento
+		- [ ] Modifique os campos para pedir email e senha
+		- [ ] Ao clicar em "Enviar", se der sucesso redirecione para /sorteio/[event_id]/[participant_id]
+		- [ ] Aplique ao layout e tema criado
+	- [ ] /sorteio/[nick]
+		- [ ] Mude a rota para /sorteio/[event_id]/[participant_id]
+		- [ ] Essa rota deve receber um state "isAuthenticated"
+		- [ ] Se autenticado busque no banco se ele já foi sorteado e mostre as informações
+		- [ ] Aplique ao layout e tema criado
+	- [ ] /admin
+		- [ ] Essa tela agora pede login e senha
+		- [ ] Quando autenticado corretamente mostra o select com os eventos criados
+		- [ ] Quando selecionado mostra o status do evento, a lista dos participantes e o botão de sortear
+		- [ ] Aplique ao layout e tema criado
