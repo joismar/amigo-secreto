@@ -9,14 +9,14 @@
 		- [x] Ao confirmar, um novo evento é criado, e um novo participante admin também, passando o id do evento para coluna "event_id"
 		- [x] Quando for sucesso, o usuário será redirecionado para /sorteio/[event_id]/[participant_id] já logado
 		- [x] Aplique ao layout e tema criado
-	- [ ] /evento/[event]
-		- [ ] Mude a rota para /evento/[event_id]
-		- [ ] Antes de tudo crie um endpoint get event e busque o evento, pelo id, caso não encontre informe na tela
-		- [ ] Remova "Amigo Secreto -" do título e deixe apenas o nome do evento
-		- [ ] Ajuste os campos para: "Nome/Apelido", "Sugestão de presentes" e "Email" e "Senha".
-		- [ ] Verifique se o email não existe, caso sucesso crie um novo participant
-		- [ ] Mude o botão "Sou Admin (Sortear)" para "Sortear" e mude o comportamento para ir para /sorteio/[event_id]
-		- [ ] Aplique ao layout e tema criado
+	- [x] /evento/[event]
+		- [x] Mude a rota para /evento/[event_id]
+		- [x] Antes de tudo crie um endpoint get event e busque o evento, pelo id, caso não encontre informe na tela
+		- [x] Remova "Amigo Secreto -" do título e deixe apenas o nome do evento
+		- [x] Ajuste os campos para: "Nome/Apelido", "Sugestão de presentes" e "Email" e "Senha".
+		- [x] Verifique se o email não existe, caso sucesso crie um novo participant
+		- [x] Mude o botão "Sou Admin (Sortear)" para "Sortear" e mude o comportamento para ir para /sorteio/[event_id]
+		- [x] Aplique ao layout e tema criado
 	- [ ] /sorteio
 		- [ ] Agora essa tela deve pedir email e senha
 		- [ ] Se achar eventos atrelados, mostre um select "Escolha o evento" e um botão "Ver sorteio"
