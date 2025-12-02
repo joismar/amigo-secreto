@@ -2,13 +2,13 @@
 	- [x] Crie um design system básico com inputs, selects, buttons, layouts e modais.
 	- [x] Crie um tema dark natalino e aplique a todos os componentes
 - [ ] Melhoria dos fluxos
-	- [ ] /evento
-		- [ ] Adicione o título "Novo Evento"
-		- [ ] Além do nome do evento, peça apelido, email e senha
-		- [ ] Crie um novo endpoint pra criar evento (tabela "event")
-		- [ ] Ao confirmar, um novo evento é criado, e um novo participante admin também, passando o id do evento para coluna "event_id"
-		- [ ] Quando for sucesso, o usuário será redirecionado para /sorteio/[event_id]/[participant_id] já logado
-		- [ ] Aplique ao layout e tema criado
+	- [x] /evento
+		- [x] Adicione o título "Novo Evento"
+		- [x] Além do nome do evento, peça apelido, email e senha
+		- [x] Crie um novo endpoint pra criar evento (tabela "event")
+		- [x] Ao confirmar, um novo evento é criado, e um novo participante admin também, passando o id do evento para coluna "event_id"
+		- [x] Quando for sucesso, o usuário será redirecionado para /sorteio/[event_id]/[participant_id] já logado
+		- [x] Aplique ao layout e tema criado
 	- [ ] /evento/[event]
 		- [ ] Mude a rota para /evento/[event_id]
 		- [ ] Antes de tudo crie um endpoint get event e busque o evento, pelo id, caso não encontre informe na tela
