@@ -25,7 +25,6 @@ export default async function handler(req: IRequest, res: IResponse) {
         }
 
         try {
-            // Find participants with matching email and password
             const { rows: participants } = await sql<Participant>`
                 SELECT * FROM participants 
                 WHERE email = ${email} AND pass = ${pass}
@@ -36,7 +35,6 @@ export default async function handler(req: IRequest, res: IResponse) {
                 return;
             }
 
-            // For each participant record, fetch the associated event details
             const eventsData = await Promise.all(participants.map(async (p) => {
                 const { rows: eventRows } = await sql<Event>`SELECT * FROM events WHERE id = ${p.event_id}`;
                 if (eventRows.length > 0) {
@@ -49,7 +47,6 @@ export default async function handler(req: IRequest, res: IResponse) {
                 return null;
             }));
 
-            // Filter out any nulls (in case event wasn't found)
             const validEvents = eventsData.filter(e => e !== null) as { event: Event, participantId: string, isAdmin: boolean }[];
 
             res.status(200).json({ success: true, events: validEvents });

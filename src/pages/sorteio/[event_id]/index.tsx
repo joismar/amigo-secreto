@@ -43,8 +43,7 @@ export default function EventLogin({ event }: { event: Event | null }) {
             const data = await response.json();
 
             if (data.success) {
-                // Check if user is participant of THIS event
-                const participantEvent = data.events.find((e: any) => e.event.id === event_id);
+                const participantEvent = data.events.find((e: { event: Event }) => e.event.id === event_id);
 
                 if (participantEvent) {
                     sessionStorage.setItem(`auth_${event_id}_${participantEvent.participantId}`, 'true');

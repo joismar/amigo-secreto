@@ -6,13 +6,10 @@ import { useParams, useRouter } from "next/navigation";
 import { GetServerSideProps } from "next/types";
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/Layout";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
 export default function Sortear({ participant, me, event }: { participant?: Participant | null, me?: Participant | null, event?: Event | null }) {
     const [authenticated, setAuthenticated] = useState(false);
-    const [pass, setPass] = useState('');
-    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const { event_id, participant_id } = useParams();
 
@@ -25,15 +22,30 @@ export default function Sortear({ participant, me, event }: { participant?: Part
                 router.push(`/sorteio/${event_id}`);
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [event_id, participant_id]);
 
-    if (!me || !participant || !event) {
-        const message = !me || !event ? "Usuário ou evento não encontrado." : "Sorteio ainda não realizado.";
+    const errorMessage = (() => {
+        switch (true) {
+            case !authenticated:
+                return "Você não tem permissão para acessar esta página.";
+            case !me:
+                return "Usuário não encontrado.";
+            case !event:
+                return "Evento não encontrado.";
+            case !participant:
+                return "Sorteio ainda não realizado.";
+            default:
+                return null;
+        }
+    })();
+
+    if (errorMessage) {
         return (
             <Layout title="Erro">
                 <div className="text-center">
                     <h2 className="text-2xl font-bold text-red-500 mb-4">Erro</h2>
-                    <p className="text-christmas-light">{message}</p>
+                    <p className="text-christmas-light">{errorMessage}</p>
                     <Button
                         className="mt-4"
                         onClick={() => router.push('/sorteio')}
@@ -46,17 +58,17 @@ export default function Sortear({ participant, me, event }: { participant?: Part
     }
 
     return (
-        <Layout title={event.name}>
+        <Layout title={event?.name || 'Amigo Secreto'}>
             <div className="max-w-md mx-auto text-center">
-                <h2 className="text-2xl font-bold text-christmas-gold mb-8">{event.name}</h2>
+                <h2 className="text-2xl font-bold text-christmas-gold mb-8">{event?.name}</h2>
 
                 <div className="bg-christmas-red/20 p-8 rounded-lg border border-christmas-gold/30 mb-8 transform transition-all hover:scale-105">
                     <p className="text-christmas-light mb-2 text-lg">Você tirou:</p>
-                    <h3 className="text-4xl font-bold text-white mb-6 animate-pulse">{participant.apelido}</h3>
+                    <h3 className="text-4xl font-bold text-white mb-6 animate-pulse">{participant?.apelido}</h3>
 
                     <div className="border-t border-christmas-gold/30 pt-6">
                         <p className="text-christmas-light mb-2">Sugestão de presente:</p>
-                        <p className="text-xl text-christmas-gold italic">"{participant.sugestao}"</p>
+                        <p className="text-xl text-christmas-gold italic">&quot;{participant?.sugestao}&quot;</p>
                     </div>
                 </div>
 
@@ -80,18 +92,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     try {
-        // Fetch event
         const { rows: eventRows } = await sql<Event>`SELECT * FROM events WHERE id = ${event_id}`;
         if (eventRows.length === 0) return { props: {} };
 
-        // Fetch me
         const { rows: meRows } = await sql<Participant>`SELECT * FROM participants WHERE id = ${participant_id} AND event_id = ${event_id}`;
         if (meRows.length === 0) return { props: {} };
 
         const me = meRows[0];
 
-        // Fetch drawn participant (using nickname stored in sorteado column)
-        // Note: The previous implementation stored nickname in 'sorteado'.
         if (!me.sorteado) {
             return { props: { me, event: eventRows[0], participant: null } };
         }
