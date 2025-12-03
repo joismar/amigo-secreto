@@ -3,27 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --background: #0f172a;
-  /* Dark Blue/Slate background */
+  --background: #0f2a12;
   --foreground: #f8fafc;
-  /* Light text */
 
   --christmas-red: #dc2626;
-  /* Red 600 */
   --christmas-green: #16a34a;
-  /* Green 600 */
   --christmas-gold: #fbbf24;
-  /* Amber 400 */
-  --christmas-dark: #0f172a;
-  /* Slate 900 */
+  --christmas-dark: #0f2a12;
   --christmas-light: #f8fafc;
-  /* Slate 50 */
 }
 
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0f2a13;
+    --background: #0f2a12;
     --foreground: #f8fafc;
 
     --christmas-red: #dc2626;
