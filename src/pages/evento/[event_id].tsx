@@ -74,6 +74,23 @@ export default function EventJoin({ participants, event }: { participants: Parti
         }
     };
 
+    const rootUrl = typeof window !== 'undefined' ? window.location.origin : '';
+
+    async function shareUrl() {
+        if (navigator?.share) {
+            try {
+                await navigator.share({
+                    title: document.title,
+                    text: 'Participe do sorteio!',
+                    url: rootUrl + `/evento/${event_id}`,
+                });
+                console.log('Página compartilhada com sucesso!');
+            } catch (error) {
+                console.error('Erro ao compartilhar:', error);
+            }
+        }
+    }
+
     return (
         <Layout title={event.name}>
             <div className="max-w-md mx-auto">
@@ -112,13 +129,21 @@ export default function EventJoin({ participants, event }: { participants: Parti
                         required
                     />
                     <div className="flex justify-between items-center pt-4">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => router.push(`/sorteio/${event_id}`)}
-                        >
-                            Sortear
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => router.push(`/sorteio/${event_id}`)}
+                            >
+                                Ver Sorteio
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={shareUrl}
+                            >
+                                Compartilhar
+                            </Button>
+                        </div>
                         <Button type="submit" disabled={loading}>
                             {loading ? 'Enviando...' : 'Enviar'}
                         </Button>

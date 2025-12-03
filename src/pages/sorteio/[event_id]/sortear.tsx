@@ -42,16 +42,14 @@ export default function SortearPage({ participants, event }: { participants: Par
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ eventId: event_id }),
+                body: JSON.stringify({ event_id: event_id }),
             });
 
-            const data = await res.json();
-
-            if (data.success) {
+            if (res.ok) {
                 alert('Sorteio realizado com sucesso!');
                 router.push('/sorteio');
             } else {
-                alert('Erro ao realizar sorteio: ' + (data.message || 'Erro desconhecido'));
+                alert('Erro ao realizar sorteio');
             }
         } catch (error) {
             console.error(error);

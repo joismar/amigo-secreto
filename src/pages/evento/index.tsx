@@ -31,8 +31,7 @@ export default function NewEvent() {
       const data = await response.json();
 
       if (data.success) {
-        // Redirect to /sorteio/[event_id]/[participant_id]
-        router.push(`/sorteio/${data.eventId}/${data.participantId}`);
+        router.push(`/evento/${data.eventId}`);
       } else {
         alert('Erro ao criar evento: ' + (data.message || 'Unknown error'));
       }

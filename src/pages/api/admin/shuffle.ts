@@ -2,9 +2,7 @@ import { Participant } from "@/helpers/types";
 import { sql } from "@vercel/postgres";
 
 type ShuffleBody = {
-  event: string;
-  adminNick: string;
-  adminPass: string;
+  event_id: string;
 }
 
 interface IRequest {
@@ -20,15 +18,9 @@ interface IResponse {
 export default async function handler(req: IRequest, res: IResponse) {
   if (req.method === 'POST') {
     try {
-      const { event, adminNick, adminPass } = req.body;
+      const { event_id } = req.body;
 
-      // Verify admin
-      const { rows: admins } = await sql<Participant>`SELECT * FROM participants WHERE event = ${event} AND apelido = ${adminNick} AND pass = ${adminPass} AND admin = true`;
-      if (admins.length === 0) {
-        return res.status(403).end();
-      }
-
-      const { rows: participants } = await sql<Participant>`SELECT * FROM participants WHERE event = ${event}`;
+      const { rows: participants } = await sql<Participant>`SELECT * FROM participants WHERE event_id = ${event_id}`;
 
       if (participants.length < 2) return res.status(400).end();
 
@@ -45,12 +37,13 @@ export default async function handler(req: IRequest, res: IResponse) {
 
       await Promise.all(
         participants.map((participant, index) =>
-          sql`UPDATE participants SET sorteado = ${shuffled[index].apelido} WHERE apelido = ${participant.apelido} AND event = ${event}`
+          sql`UPDATE participants SET sorteado = ${shuffled[index].apelido} WHERE apelido = ${participant.apelido} AND event_id = ${event_id}`
         )
       );
 
       res.status(200).end();
-    } catch {
+    } catch (err) {
+      console.log('Error shuffling participants', err);
       res.status(400).end();
     }
   }

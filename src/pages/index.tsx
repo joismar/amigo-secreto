@@ -1,42 +1,42 @@
-import localFont from "next/font/local";
 import { useRouter } from "next/navigation";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
+import { Layout } from "@/components/Layout";
 
 export default function Home() {
   const router = useRouter();
 
   return (
-    <div className={`${geistSans.variable} ${geistMono.variable} justify-center items-center h-screen min-h-screen font-[family-name:var(--font-geist-sans)]`}>      
-      <main className="flex flex-col gap-8 row-start-2 justify-center items-center h-screen">
-        <div className="bg-white shadow-md rounded px-8 py-8 mb-4 flex flex-col gap-4">
-          <p className="text-black text-lg pt-6 pb-10 px-14">Amigo Secreto</p>
+    <Layout>
+      <div className="flex flex-col gap-8 items-center">
+        <div className="text-center space-y-4 max-w-2xl mx-auto mb-8">
+          <h2 className="text-2xl font-bold text-christmas-gold">Bem-vindo ao Amigo Secreto!</h2>
+          <div className="text-christmas-light/90 space-y-2 text-lg">
+            <p>Organizar sua troca de presentes nunca foi tão fácil:</p>
+            <ol className="list-decimal list-inside space-y-1 text-left inline-block">
+              <li>Crie um novo evento</li>
+              <li>Cadastre ou compartilhe o link para os participantes</li>
+              <li>Compartilhe o link para o sorteio</li>
+              <li>Sorteie e veja quem é o seu amigo secreto</li>
+            </ol>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
           <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            className="bg-christmas-red hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
             onClick={() => router.push("/evento")}
           >
-            Entrar
+            Novo Evento
           </button>
           <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            className="bg-christmas-green hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
             onClick={() => router.push("/sorteio")}
           >
             Sortear
           </button>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }
