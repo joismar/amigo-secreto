@@ -1,6 +1,6 @@
 'use client'
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { GetServerSideProps } from "next/types";
 import { useState } from "react";
 import { sql } from "@vercel/postgres";
@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/Button";
 
 export default function EventJoin({ participants, event }: { participants: Participant[], event: Event | null }) {
     const { event_id } = useParams();
-    const router = useRouter();
     const [nickname, setNickname] = useState('');
     const [suggestion, setSuggestion] = useState('');
     const [email, setEmail] = useState('');
@@ -99,10 +98,7 @@ export default function EventJoin({ participants, event }: { participants: Parti
                     <Input
                         label="Nome/Apelido"
                         value={nickname}
-                        onChange={(e) => {
-                            const value = e.target.value.toLowerCase().replace(/\s/g, '');
-                            setNickname(value);
-                        }}
+                        onChange={(e) => setNickname(e.target.value)}
                         placeholder="Ex: fulano"
                         required
                     />
@@ -133,9 +129,12 @@ export default function EventJoin({ participants, event }: { participants: Parti
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={() => router.push(`/sorteio/${event_id}`)}
+                                onClick={() => {
+                                    navigator.clipboard.writeText(`${rootUrl}/sorteio/${event_id}`)
+                                    alert('Link copiado para a área de transferência!');
+                                }}
                             >
-                                Ver Sorteio
+                                Link do Sorteio
                             </Button>
                             <Button
                                 variant="outline"
@@ -162,14 +161,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const eventId = context.params.event_id;
 
     try {
-        // Fetch event
         const { rows: eventRows } = await sql<Event>`SELECT * FROM events WHERE id = ${eventId}`;
 
         if (eventRows.length === 0) {
             return { props: { participants: [], event: null } };
         }
 
-        // Fetch participants
         const { rows: participantRows } = await sql<Participant>`SELECT * FROM participants WHERE event_id = ${eventId}`;
 
         return {
