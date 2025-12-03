@@ -17,7 +17,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title = 'Amigo Secreto
 
             <main className="container mx-auto px-4 py-8 max-w-4xl">
                 <header className="mb-12 text-center">
-                    <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-christmas-red via-christmas-gold to-christmas-green drop-shadow-sm">
+                    <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 drop-shadow-sm h-12">
                         Amigo Secreto
                     </h1>
                     <p className="mt-2 text-christmas-gold/80 text-lg">

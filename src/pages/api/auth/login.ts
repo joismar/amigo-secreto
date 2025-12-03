@@ -12,7 +12,7 @@ interface IRequest {
 interface IResponse {
     status: (code: number) => IResponse;
     end: () => void;
-    json: (data: { success: boolean, events?: { event: Event, participantId: string }[], message?: string }) => void;
+    json: (data: { success: boolean, events?: { event: Event, participantId: string, isAdmin: boolean }[], message?: string }) => void;
 }
 
 export default async function handler(req: IRequest, res: IResponse) {
@@ -42,14 +42,15 @@ export default async function handler(req: IRequest, res: IResponse) {
                 if (eventRows.length > 0) {
                     return {
                         event: eventRows[0],
-                        participantId: p.id
+                        participantId: p.id,
+                        isAdmin: p.admin
                     };
                 }
                 return null;
             }));
 
             // Filter out any nulls (in case event wasn't found)
-            const validEvents = eventsData.filter(e => e !== null) as { event: Event, participantId: string }[];
+            const validEvents = eventsData.filter(e => e !== null) as { event: Event, participantId: string, isAdmin: boolean }[];
 
             res.status(200).json({ success: true, events: validEvents });
         } catch (error) {

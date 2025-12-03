@@ -23,13 +23,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0f172a;
+    --background: #0f2a13;
     --foreground: #f8fafc;
 
     --christmas-red: #dc2626;
     --christmas-green: #16a34a;
     --christmas-gold: #fbbf24;
-    --christmas-dark: #0f172a;
+    --christmas-dark: #0f2a12;
     --christmas-light: #f8fafc;
   }
 }

@@ -35,8 +35,8 @@
 		- [x] Se autenticado busque no banco se ele já foi sorteado e mostre as informações de uma forma bonita
 		- [x] Remova campos de login desnecessários e centralize o login na tela anterior
 		- [x] Aplique ao layout e tema criado
-	- [ ] /admin
-		- [ ] Essa tela agora pede login e senha
-		- [ ] Quando autenticado corretamente mostra o select com os eventos criados
-		- [ ] Quando selecionado mostra o status do evento, a lista dos participantes e o botão de sortear
-		- [ ] Aplique ao layout e tema criado
+	- [x] /admin
+		- [x] Modifique /sorteio para mostrar botão "Sortear" se admin
+		- [x] Redirecione "Sortear" para /sorteio/[event_id]/sortear
+		- [x] Crie /sorteio/[event_id]/sortear com lista e botão de sortear
+		- [x] Remova a tela /admin antiga

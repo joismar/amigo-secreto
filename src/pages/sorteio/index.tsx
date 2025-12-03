@@ -11,6 +11,7 @@ import { Event } from "@/helpers/types";
 type UserEvent = {
   event: Event;
   participantId: string;
+  isAdmin: boolean;
 }
 
 export default function Sorteio() {
@@ -68,9 +69,20 @@ export default function Sorteio() {
 
     const selectedEvent = userEvents.find(ue => ue.event.id === selectedEventId);
     if (selectedEvent) {
+      sessionStorage.setItem(`auth_${selectedEvent.event.id}_${selectedEvent.participantId}`, 'true');
       router.push(`/sorteio/${selectedEvent.event.id}/${selectedEvent.participantId}`);
     }
   };
+
+  const handleSortear = () => {
+    if (!selectedEventId) {
+      alert('Selecione um evento');
+      return;
+    }
+    router.push(`/sorteio/${selectedEventId}/sortear`);
+  };
+
+  const selectedUserEvent = userEvents.find(ue => ue.event.id === selectedEventId);
 
   return (
     <Layout title="Ver Sorteio">
@@ -118,22 +130,34 @@ export default function Sorteio() {
               ]}
               required
             />
-            <div className="flex justify-between pt-4 gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setStep('login');
-                  setUserEvents([]);
-                  setEmail('');
-                  setPass('');
-                }}
-              >
-                Voltar
-              </Button>
-              <Button type="submit" className="flex-1">
-                Ver Sorteio
-              </Button>
+            <div className="flex flex-col gap-4 pt-4">
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setStep('login');
+                    setUserEvents([]);
+                    setEmail('');
+                    setPass('');
+                  }}
+                >
+                  Voltar
+                </Button>
+                <Button type="submit" className="flex-1">
+                  Ver Sorteio
+                </Button>
+              </div>
+
+              {selectedUserEvent?.isAdmin && (
+                <Button
+                  type="button"
+                  onClick={handleSortear}
+                  className="w-full bg-christmas-gold hover:bg-yellow-600 text-christmas-dark"
+                >
+                  Sortear (Admin)
+                </Button>
+              )}
             </div>
           </form>
         )}
